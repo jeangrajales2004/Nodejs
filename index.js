@@ -44,22 +44,39 @@ app.post('/productos', async(req,res)=>{
     if (Insercion)
         res.status(200).json({"Mensaje": "Registo Exitoso"})
     else
-        res.status(404).jsos({"Mensaje": "Se presento un Error"})
+        res.status(404).json({"Mensaje": "Se presento un Error"})
 })
 
 
-app.put('/productos:nombre', async(req,res)=>{
+app.put('/productos/:nombre', async(req,res)=>{
     const productoEditado = {
         nombre: req.params.nombre,
         precio: req.body.precio,
     };
 
-    let actualizacion = await modeloProducto.findOneAndUpdate({nombre:req.params.nombre},productoEditado);
-    if (actualizacion)
+    let actualizacion = await modeloProducto.findOneAndUpdate({'nombre':req.params.nombre},productoEditado);
+    if (actualizacion){
         res.status(200).json({"Mensaje": "Actualizado Exitosamente"})
-    else
-        res.status(404).jsos({"Mensaje": "Se presento un Error"})
+    }else{
+        res.status(404).json({"Mensaje": "Se presento un Error, No se actualizo"})
+    }
 })
+
+app.delete('/productos/:nombre', async(req,res)=>{
+
+    const productoEliminado = {
+        nombre: req.params.nombre,
+        precio: req.body.precio,
+    }
+    
+    let eliminacion = await modeloProducto.findOneAndDelete({'nombre':req.params.nombre}, productoEliminado);
+    if(eliminacion){
+       res.status(200).json({"Mensaje":"Eliminado Correctamente"})
+    }else{
+        res.status(404).json({"Mensaje":"Se presento un error"})
+    }
+})
+
 //callback
 app.listen(9888,()=>{
     console.log('Servidor en linea, Puerto 9888')
